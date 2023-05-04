@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-from nospy.__main__ import VERSION
+from nospy.version import VERSION
 
 setup(
     name='nospy',
