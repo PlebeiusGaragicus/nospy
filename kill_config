@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "press enter to rm the config file (Ctrl+C to cancel)"
+read
+rm ~/.config/nospy/config.json
+echo config file removed

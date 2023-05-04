@@ -1,65 +1,56 @@
-import argparse
-import json
-import logging
 import os
-# import sys
+import logging
 from pathlib import Path
-
 import docopt
 
-# from config import config_init, save_config
-from nospy.home import home
-
-# from nospy import USAGE, __version__
 from nospy import USAGE, VERSION
+from nospy.config import config, Config
+from nospy.logger import setup_logging
+
+# COMMANDS:
+from nospy.commands.home import home
+# ...
+from nospy.commands.setprivate import set_private_key
+from nospy.commands.public import show_public_key
+from nospy.commands.key_gen import key_gen
+
+
 
 def main():
-    # # Find the data directory
-    # data_dir = str(Path.home() / ".config/nostr")
+    setup_logging()
+    logger = logging.getLogger("nospy")
+
+    global config
+    config = Config()
+
+    # data_dir = str(Path.home() / DATA_DIR)
     # os.makedirs(data_dir, exist_ok=True)
 
-    # # Logger config
-    # logging.basicConfig(level=logging.INFO, format="<> %(message)s")
-    # log = logging.getLogger(__name__)
-
     # # Parse config
-    # config_path = os.path.join(data_dir, "config.json")
+    # config_path = os.path.join(data_dir, CONFIG_FILENAME)
     # if not os.path.exists(config_path):
     #     save_config(config_path)
+    # else:
+    #     config_init(config_path)
 
-    # with open(config_path, "r") as f:
-    #     try:
-    #         config = json.load(f)
-    #     except json.JSONDecodeError as e:
-    #         log.error(f"Can't parse config file {config_path}: {str(e)}")
-    #         return
 
-    # Initialize config
-    # config_init()
-
-    # Parse args
     args = docopt.docopt(USAGE, version=f"nospy {VERSION}")
+    # logger.debug(f"args: {args}")
 
-    print(f"args: {args}")
+    passed_args = {k: v for k, v in args.items() if v not in (False, [], None)}
+    logger.debug(f"passed args: {passed_args}")
 
-    # Execute functions based on parsed arguments
-    # Replace function names with actual function calls
     if args["home"]:
         home(args)
-    else:
-        print("Invalid command")
-    # elif args["inbox"]:
-    #     home(args, True)
-    # elif args["setprivate"]:
-    #     set_private_key(args)
-    #     save_config(config_path)
-    # ...
-
-
-
+    elif args["setprivate"]:
+        set_private_key(args)
+        save_config(config_path)
+    elif args["public"]:
+        show_public_key(args)
+    elif args["key-gen"]:
+        key_gen(args)
 
 
 
 if __name__ == '__main__':
     main()
-    print("DONE")

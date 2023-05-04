@@ -1,5 +1,6 @@
 VERSION = '0.0.1'
 
+# NOTE: This usage string is very important.  Since we are using docopt, it is used to parse the command line arguments.
 USAGE = '''
 noscl
 
@@ -32,6 +33,8 @@ Specify <content> as '-' to make the publish or message command read it
 from stdin.
 '''
 
+
+# NOTE: This is an example of the args dictionary that is returned by docopt.
 # args: {'--about': None,
 #  '--all': False,
 #  '--banner': None,
