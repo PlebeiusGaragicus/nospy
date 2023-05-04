@@ -15,20 +15,31 @@ from nospy import config
 from nospy.keys import decode_key
 
 
-
 def set_private_key(opts):
-    """ TODO
-    Set the private key
+    """ Set the private key.
+    Note: this function has no side effects - you'll need to save the config after calling it.
+        This function will fail and exit() for unrecoverable errors.
+
+    ```
+    Usage:
+        nospy setprivate nsec1234567890... # BASE58 nsec
+        nospy setprivate 893ho383hjal39... # HEX ENCODED
+        nospy setprivate abandon abando... # SEED WORDS
+        nospy setprivate --random          # Generate a random key
+    ```
+
     """
-    logger.debug(f"Setting private key to '{opts['<key>']}'")
-    logger.warn("This is not yet implemented")
 
-    return
+    if opts.get("--random", False):
+        keyraw = random_key()
+        logger.debug(f"Generated a random private key: {keyraw}")
+    else:
+        keyraw = opts["<key_material>"]
+        logger.debug(f"Setting private key to '{keyraw}'")
 
-    keyraw = opts["<key>"]
-    keyval = decode_key(keyraw)
 
-    # config.config["private_key"] = opts["<key>"]
-    # config[PRIVATE_KEY] = keyval.decode()
+    # keyval = decode_key(keyraw)
 
-    logger.debug(f"private_key: {config.config['private_key']}")
+    # config.private_key = keyval
+
+    # logger.debug(f"private_key: {config.private_key}")

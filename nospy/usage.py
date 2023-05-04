@@ -2,13 +2,19 @@
 USAGE = '''
 Usage:
   nospy version
-  nospy setprivate <key>
+  nospy setprivate [--random | <key_material> ]
   nospy public
   nospy publish
   nospy follow <pubkey> [--name=<name>]
   nospy unfollow <pubkey>
   nospy following
   nospy key-gen
+
+Notes:
+  <key_material> for the setprivate command can be:
+    - A nsec (base58) string (e.g., nsec1234567890...)
+    - A hex-encoded string (e.g., 1a2b3c4d...)
+    - A list of seed words enclosed in quotes (e.g., "word1 word2 word3 ...")
 '''
 
 

@@ -33,7 +33,7 @@ def main():
 
     elif args.get("setprivate", False):
         set_private_key(args)
-        config.save_config() #TODO NOT TESTED!!!
+        # config.save_config() #TODO NOT TESTED!!!
 
     elif args.get("public", False):
         show_public_key(args)
