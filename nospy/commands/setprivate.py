@@ -1,3 +1,5 @@
+import sys
+import re
 import logging
 logger = logging.getLogger("nospy")
 
@@ -30,16 +32,31 @@ def set_private_key(opts):
 
     """
 
+    # if the user wants to generate a random key
     if opts.get("--random", False):
         keyraw = random_key()
         logger.debug(f"Generated a random private key: {keyraw}")
+    
+        # if the user supplies key material
     else:
         keyraw = opts["<key_material>"]
         logger.debug(f"Setting private key to '{keyraw}'")
 
+        # Check if keyraw is a valid BASE58 nsec string
+        if re.match("^nsec[1-9A-HJ-NP-Za-km-z]+$", keyraw):
+            logging.debug(f"BASE58 nsec string detected: {keyraw}")
+            # TODO: Process the BASE58 nsec string
+            pass
 
-    # keyval = decode_key(keyraw)
+        # Check if keyraw is a valid hex-encoded string
+        elif re.match("^[0-9a-fA-F]+$", keyraw):
+            logging.debug(f"Hex-encoded string detected: {keyraw}")
+            # TODO: Process the hex-encoded string
+            pass
 
-    # config.private_key = keyval
-
-    # logger.debug(f"private_key: {config.private_key}")
+        # If keyraw is neither BASE58 nsec nor hex-encoded, assume it's a list of seed words
+        else:
+            seed_words = keyraw.split()
+            logging.debug(f"Seed words detected: {seed_words}")
+            # TODO: Process the seed words
+            pass
