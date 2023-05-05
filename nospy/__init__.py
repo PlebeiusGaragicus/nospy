@@ -1,3 +1,4 @@
+# This line is here so it's exposed as the entrypoint in setup.py
 from nospy.main import main
 
 # putting this here will cause a circular import during 'pip install -e .'

@@ -2,13 +2,13 @@
 USAGE = '''
 Usage:
   nospy version
-  nospy setprivate [--random | <key_material> ]
+  nospy setprivate <key_material> [--passphrase=<passphrase>]
   nospy public
   nospy publish
   nospy follow <pubkey> [--name=<name>]
   nospy unfollow <pubkey>
   nospy following
-  nospy key-gen
+  nospy key-gen [--12-words] [--passphrase=<passphrase>] [--raw]
 
 Notes:
   <key_material> for the setprivate command can be:

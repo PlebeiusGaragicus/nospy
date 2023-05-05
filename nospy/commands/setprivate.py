@@ -1,62 +1,94 @@
-import sys
 import re
+from typing import Union
 import logging
 logger = logging.getLogger("nospy")
 
+from bip32 import BIP32
+import bip39
 
-import codecs
-import logging
-from bech32 import decode
-from bitcoin import ecdsa_raw_sign
-from bitcoin import privtopub
-from bitcoin import random_key
-from docopt import docopt
+from nospy.keys import nsecToHex
+from nospy.keithmukai import Bip39PrivateKey
 
 
-from nospy import config
-from nospy.keys import decode_key
-
-
-def set_private_key(opts):
+def set_private_key(opts) -> Union[None, str]:
     """ Set the private key.
     Note: this function has no side effects - you'll need to save the config after calling it.
         This function will fail and exit() for unrecoverable errors.
 
     ```
     Usage:
-        nospy setprivate nsec1234567890... # BASE58 nsec
-        nospy setprivate 893ho383hjal39... # HEX ENCODED
-        nospy setprivate abandon abando... # SEED WORDS
-        nospy setprivate --random          # Generate a random key
+        nospy setprivate [--random | <key_material>] [--passphrase=<passphrase>]
+
+        Example: SUPPLY BASE58 NSEC
+        > nospy setprivate nsec1fh4tww42zmvt6y5mwt3jdwalmckaz8npaw0sqz25admxk5x2w4kq600yfh
+
+        Example: SUPPLY HEX ENCODED SOMETHING ---(FORMAT NAME??? TODO)
+        > nospy setprivate 4deab73aaa16d8bd129b72e326bbbfde2dd11e61eb9f000954eb766b50ca756c
+
+        Example: SUPPLY SEED WORDS WITH OPTIONAL PASSPHRASE
+        > nospy setprivate "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon" [--passphrase=abandon]
+        # NOTE: ensure seed words are contained inside quotes
+
+        Example: USE A NEW RANDOMLY-GENERATED KEY (WITH OPTIONAL PASSPHRASE)
+        nospy setprivate --random [--passphrase="passphrase here"]
     ```
-
     """
-
     # if the user wants to generate a random key
-    if opts.get("--random", False):
-        keyraw = random_key()
-        logger.debug(f"Generated a random private key: {keyraw}")
-    
-        # if the user supplies key material
-    else:
-        keyraw = opts["<key_material>"]
-        logger.debug(f"Setting private key to '{keyraw}'")
+    # NOTE: FEATURE REMOVED
+    # if opts.get("--random", False):
+    #     logger.warn("NOT IMPLEMENTED")
+    #     # keyraw = random_key()
+    #     # logger.debug(f"Generated a random private key: {keyraw}")
+    #     return None
 
-        # Check if keyraw is a valid BASE58 nsec string
-        if re.match("^nsec[1-9A-HJ-NP-Za-km-z]+$", keyraw):
-            logging.debug(f"BASE58 nsec string detected: {keyraw}")
-            # TODO: Process the BASE58 nsec string
-            pass
 
-        # Check if keyraw is a valid hex-encoded string
-        elif re.match("^[0-9a-fA-F]+$", keyraw):
-            logging.debug(f"Hex-encoded string detected: {keyraw}")
-            # TODO: Process the hex-encoded string
-            pass
 
-        # If keyraw is neither BASE58 nsec nor hex-encoded, assume it's a list of seed words
+    keyraw = opts["<key_material>"]
+    # logger.debug(f"Setting private key to '{keyraw}'")
+
+
+
+    # if keyraw is BASE58 nsec
+    # if re.match("^nsec", keyraw):
+    if keyraw.startswith("nsec"):
+        logging.debug(f"BASE58 nsec string detected: {keyraw}")
+
+        ret = nsecToHex(keyraw)
+        if not ret:
+            logger.error(f"Error decoding nsec: {keyraw}")
         else:
-            seed_words = keyraw.split()
-            logging.debug(f"Seed words detected: {seed_words}")
-            # TODO: Process the seed words
-            pass
+            logger.debug(f"Decoded into hex: {ret}")
+
+        return ret
+
+
+
+    # keyraw is a hex-encoded string
+    elif re.match("^[0-9a-fA-F]+$", keyraw):
+        logger.debug(f"Hex-encoded string detected: {keyraw}")
+        # TODO: ERROR CHECKING HERE
+        logger.info(f"Supplied hex-encded private key appears valid: {pk.hex()}")
+
+
+
+    # If keyraw is neither BASE58 nsec nor hex-encoded, assume it's a list of seed words
+    else:
+        wordlist = keyraw.split()
+        logger.debug(f"Procesing seed words: {wordlist}")
+
+        passphrase = None
+        if opts.get("--passphrase", False):
+            passphrase = opts["--passphrase"]
+            logging.debug(f"Using supplied passphrase: '{passphrase}'")
+
+        # Refer to: https://github.com/nostr-protocol/nips/blob/master/06.md
+        # derivation_path = "m/44'/1237'/0'/0/0"
+        try:
+            pk = Bip39PrivateKey(mnemonic=wordlist, passphrase=passphrase)
+        except bip39.DecodingError as e:
+            # TODO: should this function exit() or return false or what?
+            logger.error(f"{str(e)}")
+            return False
+    
+        logger.info(f"Decoded seed: {pk.hex()}")
+        return pk.hex()

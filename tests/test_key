@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Note: the idea is that we will run `key-gen` and then take the output and run it thru `setprivate` so that we can test all the features!!!!!!
+
+
+
+
+
+# TODO: take the output from this here....
+./run key-gen --raw
+
+# ...dump it into here...
+./run setprivate $KEY --verbose
+
+# check the outputs

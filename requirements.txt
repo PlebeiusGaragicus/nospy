@@ -1,3 +1,7 @@
 docopt
+nostr
+embit
 bitcoin
 bech32
+bip32
+bip39
