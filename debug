@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Running in debug mode"
+
+echo "ARGS: '$@'"
+
+DEBUG=1 ./run "$@"
