@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 logger = logging.getLogger("nospy")
 
 # This is the global config object that is set in __main__.py
-config = None
+# config = None
 
 DATA_DIR = ".config/nospy"
 CONFIG_FILENAME = "config.json"
@@ -16,10 +16,21 @@ CONFIG_FILENAME = "config.json"
 
 @dataclass
 class Config:
-    # file_name: str = CONFIG_FILENAME
+    _instance = None
     state: dict = field(default_factory=dict)
 
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.__initialized = False
+        return cls._instance
+
+
     def __post_init__(self):
+        if hasattr(self, "__initialized") and self.__initialized:
+            return
+        self.__initialized = True
+
         # data_dir = str(Path.home() / DATA_DIR)
         # TODO: This is a hack to allow for testing. We should find a better way to do this.... also... don't ship this code with this hack in it...
         if os.getenv("DEBUG", False):
@@ -75,3 +86,6 @@ class Config:
             except json.JSONDecodeError as e:
                 logger.critical(f"Can't parse config file. Ensure the file is properly formatted JSON. {self.config_path}: {str(e)}")
                 sys.exit(1)
+
+
+config = Config()

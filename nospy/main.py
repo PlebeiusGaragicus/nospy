@@ -4,18 +4,19 @@ import logging
 
 import docopt
 
-from nospy.config import config, Config
+# from nospy.config import config, Config
+from nospy.config import config
+# from nospy.config import init_config
 from nospy.logger import setup_logging
 
-import nostr
 
 # COMMANDS:
 from nospy.usage import USAGE
 from nospy.version import VERSION
 # ...
 from nospy.commands.setprivate import set_private_key
-# from nospy.commands.public import show_public_key
-from nospy.key_gen import key_gen
+from nospy.commands.public import show_public_key
+from nospy.commands.key_gen import key_gen
 
 
 def main():
@@ -25,8 +26,8 @@ def main():
     setup_logging()
     logger = logging.getLogger("nospy")
 
-    global config
-    config = Config()
+    # global config
+    # config = Config()
 
 
     args = docopt.docopt(USAGE, version=f"nospy {VERSION}")
@@ -49,15 +50,16 @@ def main():
         priv = set_private_key(args)
         if not priv:
             sys.exit(1)
+        logger.info(f"hex private key: {priv}")
 
-        #TODO NOT TESTED!!!
         config.private_key = priv
         config.save_config()
 
+        logger.info("Private key set successfully.")
+
     ### PUBLIC ##########################
     elif args.get("public", False):
-        print("showing public key...")
-        # show_public_key(args)
+        show_public_key(args)
 
     ### PUBLISH #########################
     elif args.get("publish", False):

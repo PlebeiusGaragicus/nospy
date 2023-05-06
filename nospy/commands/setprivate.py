@@ -89,6 +89,8 @@ def set_private_key(opts) -> Union[None, str]:
             # TODO: should this function exit() or return false or what?
             logger.error(f"{str(e)}")
             return False
-    
-        logger.info(f"Decoded seed: {pk.hex()}")
+        except ValueError as e:
+            logger.error(f"{str(e)}")
+            return False
+
         return pk.hex()

@@ -4,6 +4,7 @@ Usage:
   nospy version
   nospy setprivate <key_material> [--passphrase=<passphrase>]
   nospy public
+  nospy private
   nospy publish
   nospy follow <pubkey> [--name=<name>]
   nospy unfollow <pubkey>

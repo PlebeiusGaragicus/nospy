@@ -51,18 +51,17 @@ def key_gen(opts):
     if passphrase:
         pk = Bip39PrivateKey(pk.mnemonic, passphrase)
 
-    #
     mnemonic = " ".join(pk.mnemonic)
 
     if not raw:
-        print(f"nsec:       {pk.bech32()}")
-        print(f"nsec hex:   {pk.hex()}")
-        print(f"bech32:     {pk.public_key.bech32()}")
-        print(f"bech32 hex: {pk.public_key.hex()}")
-        print(f"seed words: {mnemonic}")
+        print(f"nsec:     {pk.bech32()}")
+        print(f"nsec hex: {pk.hex()}")
+        print(f"npub:     {pk.public_key.bech32()}")
+        print(f"npub hex: {pk.public_key.hex()}")
+        print(f"words:    {mnemonic}")
         if passphrase:
-            print(f"passphrase: {passphrase}")
-            print(f"w/ quotes: '{passphrase}'")
+            print(f"phrase:   {passphrase}")
+            print(f"'phrase' '{passphrase}'")
     else:
         print(pk.bech32())
         print(pk.hex())

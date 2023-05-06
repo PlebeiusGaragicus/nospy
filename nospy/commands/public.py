@@ -1,25 +1,18 @@
 import logging
 logger = logging.getLogger("nospy")
 
+from nospy.config import config
 
+from nostr.key import PrivateKey
 
-from nospy import config
-# from nospy.keys import decode_key, get_pub_key
+def show_public_key(opts):
+    if config.private_key == None:
+        logger.warn("No private key set.")
+        return
+    
+    bitz = bytes.fromhex(config.private_key)
 
+    priv = PrivateKey(bitz)
 
-
-
-
-
-# def show_public_key(opts):
-#     if config["PrivateKey"] == "":
-#         logging.warn("No private key set.")
-#         return
-
-#     pubkey = get_pub_key(config["PrivateKey"])
-#     if pubkey != "":
-#         print(pubkey)
-#         # Implement nip19.EncodePublicKey() or find an alternative library
-#         # nip19pubkey, _ = nip19.EncodePublicKey(pubkey, "")
-#         # print(nip19pubkey)
-
+    print(f"npub: {priv.public_key.bech32()}")
+    print(f"hex:  {priv.public_key.hex()}")
