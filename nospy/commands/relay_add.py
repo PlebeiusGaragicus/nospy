@@ -22,4 +22,4 @@ def relay_add(opts):
     })
 
     Config.get_instance().save_config()
-    logger.debug(f"Relay added: {addr}")
+    # logger.debug(f"Relay added: {addr}")

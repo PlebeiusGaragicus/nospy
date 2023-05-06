@@ -83,9 +83,26 @@ class Config(Singleton):
             return True
         else:
             return False
-
+        
     def clear_relays(self):
         self.state["relays"] = {}
+
+    @property
+    def following(self):
+        return self.state.get("following", [])
+
+    def follow(self, pubkey):
+        if "following" not in self.state:
+            self.state["following"] = []
+        self.state["following"].append(pubkey)
+
+    def unfollow(self, addr) -> bool:
+        if "following" in self.state and addr in self.state["following"]:
+            self.state["following"].remove(addr)
+            return True
+        else:
+            return False
+
     ##############################
 
 
