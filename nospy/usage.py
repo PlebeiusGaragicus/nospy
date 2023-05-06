@@ -5,12 +5,14 @@ Usage:
   nospy setprivate <key_material> [--passphrase=<passphrase>]
   nospy public
   nospy private
+  nospy publish [<content>] [--file=<file>]
   nospy follow <pubkey> [--name=<name>]
   nospy unfollow <pubkey>
   nospy following
   nospy key-gen [--12-words] [--passphrase=<passphrase>] [--raw]
   nospy relay-add <url>
-  nospy relay-remove [<url>] [--all]
+  nospy relay-remove [<url> | --all]
+  nospy relays
 
 Notes:
   <key_material> for the setprivate command can be:

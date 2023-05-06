@@ -3,8 +3,11 @@ logger = logging.getLogger("nospy")
 
 from typing import Union
 
+from nostr.key import PrivateKey
+
 import bech32
-# from nostr.key import PrivateKey, PublicKey
+
+from nospy.config import Config
 
 
 #  A Bech32_encoded address consists of 3 parts: HRP + Separator + Data: bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4
@@ -40,6 +43,22 @@ def nsecToHex(nsec: str) -> Union[None, str]:
 
 
 
+
+
+
+
+def load_private_key() -> Union[None, PrivateKey]:
+    Config.get_instance().load_config()
+
+    privkey = Config.get_instance().private_key
+
+    if not privkey:
+        logger.critical("No private key found. Please set a private key first.")
+        return None
+    
+    bs = bytes.fromhex(privkey)
+
+    return PrivateKey(bs)
 
 
 

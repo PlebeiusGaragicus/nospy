@@ -15,11 +15,13 @@ from nospy.version import VERSION
 from nospy.commands.setprivate import set_private_key
 from nospy.commands.public import show_public_key
 from nospy.commands.private import show_private_key
+from nospy.commands.publish import publish
 from nospy.commands.follow import follow
 from nospy.commands.unfollow import unfollow
 from nospy.commands.key_gen import key_gen
 from nospy.commands.relay_add import relay_add
 from nospy.commands.relay_remove import relay_remove
+from nospy.commands.relays import relays
 
 
 def main():
@@ -67,7 +69,7 @@ def main():
 
     ### PUBLISH #########################
     elif args.get("publish", False):
-        logger.info("publishing...")
+        publish(args)
 
     ### FOLLOW ##########################
     elif args.get("follow", False):
@@ -96,3 +98,7 @@ def main():
     ### RELAY-REMOVE #######################
     elif args.get("relay-remove", False):
         relay_remove(args)
+
+    ### RELAYS ##########################
+    elif args.get("relays", False):
+        relays(args)
