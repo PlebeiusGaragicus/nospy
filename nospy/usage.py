@@ -10,6 +10,8 @@ Usage:
   nospy unfollow <pubkey>
   nospy following
   nospy key-gen [--12-words] [--passphrase=<passphrase>] [--raw]
+  nospy relay-add <url>
+  nospy relay-remove [<url>] [--all]
 
 Notes:
   <key_material> for the setprivate command can be:

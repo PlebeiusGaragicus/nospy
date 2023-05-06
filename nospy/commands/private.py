@@ -5,7 +5,7 @@ from nospy.config import Config
 
 from nostr.key import PrivateKey
 
-def show_public_key(opts):
+def show_private_key(opts):
     if Config.get_instance().private_key == None:
         logger.warn("No private key set.")
         return
@@ -14,5 +14,5 @@ def show_public_key(opts):
 
     priv = PrivateKey(bitz)
 
-    print(f"npub: {priv.public_key.bech32()}")
-    print(f"hex:  {priv.public_key.hex()}")
+    print(f"npub: {priv.bech32()}")
+    print(f"hex:  {priv.hex()}")

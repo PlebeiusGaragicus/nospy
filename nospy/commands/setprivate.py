@@ -1,3 +1,4 @@
+import sys
 import re
 from typing import Union
 import logging
@@ -6,6 +7,7 @@ logger = logging.getLogger("nospy")
 from bip32 import BIP32
 import bip39
 
+from nospy.config import Config
 from nospy.keys import nsecToHex
 from nospy.keithmukai import Bip39PrivateKey
 
@@ -53,21 +55,25 @@ def set_private_key(opts) -> Union[None, str]:
     if keyraw.startswith("nsec"):
         logging.debug(f"BASE58 nsec string detected: {keyraw}")
 
-        ret = nsecToHex(keyraw)
-        if not ret:
+        priv_hex = nsecToHex(keyraw)
+        if not priv_hex:
             logger.error(f"Error decoding nsec: {keyraw}")
         else:
-            logger.debug(f"Decoded into hex: {ret}")
+            logger.debug(f"Decoded into hex: {priv_hex}")
 
-        return ret
+        # return ret
+        Config.get_instance().private_key = priv_hex
+        Config.get_instance().save_config()
 
 
 
     # keyraw is a hex-encoded string
     elif re.match("^[0-9a-fA-F]+$", keyraw):
-        logger.debug(f"Hex-encoded string detected: {keyraw}")
         # TODO: ERROR CHECKING HERE
-        logger.info(f"Supplied hex-encded private key appears valid: {pk.hex()}")
+        logger.debug(f"Hex-encoded string detected: {keyraw}")
+        logger.critical("NOT IMPLEMENTED")
+        sys.exit(1)
+        # logger.info(f"Supplied hex-encded private key appears valid: {fuck}")
 
 
 
@@ -85,12 +91,15 @@ def set_private_key(opts) -> Union[None, str]:
         # derivation_path = "m/44'/1237'/0'/0/0"
         try:
             pk = Bip39PrivateKey(mnemonic=wordlist, passphrase=passphrase)
+
+            Config.get_instance().private_key = pk.hex()
+            Config.get_instance().save_config()
         except bip39.DecodingError as e:
-            # TODO: should this function exit() or return false or what?
             logger.error(f"{str(e)}")
-            return False
+            sys.exit(1)
+            # TODO: should this function exit() or return false or what?
+            # return
         except ValueError as e:
             logger.error(f"{str(e)}")
-            return False
-
-        return pk.hex()
+            sys.exit(1)
+            # return
