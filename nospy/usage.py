@@ -9,7 +9,7 @@ Usage:
   nospy follow <pubkey> [--name=<name>]
   nospy unfollow <pubkey>
   nospy following
-  nospy key-gen [--12-words] [--passphrase=<passphrase>] [--raw]
+  nospy keygen [--12-words] [--passphrase=<passphrase>] [--raw]
   nospy relay-add <url>
   nospy relay-remove [<url> | --all]
   nospy relays

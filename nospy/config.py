@@ -3,10 +3,12 @@ import sys
 import json
 from pathlib import Path
 from dataclasses import dataclass, field
+from typing import Union
 
 import logging
 logger = logging.getLogger("nospy")
 
+from nostr.key import PrivateKey, PublicKey
 
 DATA_DIR = ".config/nospy"
 CONFIG_FILENAME = "config.json"
@@ -60,13 +62,27 @@ class Config(Singleton):
 
 
     ##############################
+    # @property
+    # def private_key(self):
+    #     return self.state.get("private_key")
     @property
-    def private_key(self):
-        return self.state.get("private_key")
+    def private_key(self) -> Union[None, PrivateKey]:
+        priv = self.state.get("private_key", None)
+        if priv is None:
+            return None
+        bites = bytes.fromhex(priv)
+        return PrivateKey(bites)
 
     @private_key.setter
-    def private_key(self, value):
-        self.state["private_key"] = value
+    def private_key(self, key):
+        self.state["private_key"] = key
+
+    @property
+    def public_key(self) -> Union[None, PublicKey]:
+        priv = self.private_key
+        if priv is None:
+            return None
+        return priv.public_key
 
     @property
     def relays(self):
@@ -91,17 +107,51 @@ class Config(Singleton):
     def following(self):
         return self.state.get("following", [])
 
-    def follow(self, pubkey):
-        if "following" not in self.state:
-            self.state["following"] = []
-        self.state["following"].append(pubkey)
+    # def follow(self, pubkey, nickname=None):
+    #     if "following" not in self.state:
+    #         self.state["following"] = []
 
-    def unfollow(self, addr) -> bool:
-        if "following" in self.state and addr in self.state["following"]:
-            self.state["following"].remove(addr)
+    #     f = {
+    #             "pubkey": pubkey,
+    #             "nickname": nickname
+    #          }
+
+    #     self.state["following"].append(f)
+
+    # def unfollow(self, addr) -> bool:
+    #     if "following" in self.state and addr in self.state["following"]:
+    #         self.state["following"].remove(addr)
+    #         return True
+    #     else:
+    #         return False
+
+    def follow(self, pubkey, name=None):
+        if "following" not in self.state:
+            self.state["following"] = {}
+
+        self.state["following"][pubkey] = {"name": name}
+
+    def unfollow(self, pubkey) -> bool:
+        if "following" in self.state and pubkey in self.state["following"]:
+            del self.state["following"][pubkey]
             return True
         else:
             return False
+            
+    
+    # @property
+    # def private_key_bytes(self) -> Union[None, PrivateKey]:
+    #     """ TODO - I think this is a stupid round-about way of doing things... we should just init the config and store the private key as a PrivateKey object... DUH!
+    #     """
+
+    #     if not self.private_key:
+    #         logger.critical("No private key set. Please set a private key first.")
+    #         return None
+
+    #     bites = bytes.fromhex(self.private_key)
+
+    #     return PrivateKey(bites)
+
 
     ##############################
 

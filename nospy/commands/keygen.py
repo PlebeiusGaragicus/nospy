@@ -10,6 +10,32 @@ from bitcoin import random_key
 from nospy.keithmukai import Bip39PrivateKey
 
 
+def format_seed_words(words, num_columns=3):
+    num_words = len(words)
+    words_per_column = (num_words + num_columns - 1) // num_columns
+    max_number_width = len(str(num_words))
+
+    # Calculate the maximum word length in each column
+    max_word_lengths = [0] * num_columns
+    for col in range(num_columns):
+        start = col * words_per_column
+        end = min((col + 1) * words_per_column, num_words)
+        max_word_lengths[col] = max(len(words[i]) for i in range(start, end))
+
+    formatted_words = ""
+    for row in range(words_per_column):
+        line = ""
+        for col in range(num_columns):
+            index = row + col * words_per_column
+            if index < num_words:
+                number = f"{index + 1:>{max_number_width}}"
+                word = words[index].ljust(max_word_lengths[col])
+                line += f"{number}. {word}  "
+        formatted_words += line.rstrip() + "\n"
+
+    return formatted_words
+
+
 
 def key_gen(opts):
     """ Generates a random key with optional supplied-passphrase
@@ -22,8 +48,7 @@ def key_gen(opts):
 
     --12-words          : Generate a key as 12 seed words (defaults is 24)
     --passphrase=       : Supply a passphrase
-    --raw               : Do not label the key outputs
-    --nolabels          : Do not label the key outputs (TODO - rename???)
+    --raw               : Only display bech32 'nsec' and word list
 
     ```
     """
@@ -51,22 +76,30 @@ def key_gen(opts):
     if passphrase:
         pk = Bip39PrivateKey(pk.mnemonic, passphrase)
 
-    mnemonic = " ".join(pk.mnemonic)
+    # mnemonic = " ".join(pk.mnemonic)
+
+    formatted_seed_words = format_seed_words(pk.mnemonic)
 
     if not raw:
         print(f"nsec:     {pk.bech32()}")
         print(f"nsec hex: {pk.hex()}")
         print(f"npub:     {pk.public_key.bech32()}")
         print(f"npub hex: {pk.public_key.hex()}")
-        print(f"words:    {mnemonic}")
+        # print(f"words:    {pk.mnemonic}")
+        print(formatted_seed_words)
         if passphrase:
             print(f"phrase:   {passphrase}")
             print(f"'phrase' '{passphrase}'")
     else:
         print(pk.bech32())
-        print(pk.hex())
-        print(pk.public_key.bech32())
-        print(pk.public_key.hex())
-        print(mnemonic)
-        if passphrase:
-            print(passphrase)
+        print(" ".join(pk.mnemonic))
+
+    # else:
+    #     print(pk.bech32())
+    #     print(pk.hex())
+    #     print(pk.public_key.bech32())
+    #     print(pk.public_key.hex())
+    #     # print(mnemonic)
+    #     print(formatted_seed_words)
+    #     if passphrase:
+    #         print(passphrase)

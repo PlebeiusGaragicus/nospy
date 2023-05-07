@@ -45,7 +45,8 @@ def set_private_key(opts) -> Union[None, str]:
 
 
 
-    keyraw = opts["<key_material>"]
+    # keyraw = opts["<key_material>"]
+    keyraw = opts.get("<key_material>", None)
     # logger.debug(f"Setting private key to '{keyraw}'")
 
 
@@ -69,11 +70,12 @@ def set_private_key(opts) -> Union[None, str]:
 
     # keyraw is a hex-encoded string
     elif re.match("^[0-9a-fA-F]+$", keyraw):
-        # TODO: ERROR CHECKING HERE
         logger.debug(f"Hex-encoded string detected: {keyraw}")
-        logger.critical("NOT IMPLEMENTED")
-        sys.exit(1)
+        # TODO: ERROR CHECKING HERE
         # logger.info(f"Supplied hex-encded private key appears valid: {fuck}")
+
+        Config.get_instance().private_key = keyraw
+        Config.get_instance().save_config()
 
 
 

@@ -18,7 +18,8 @@ from nospy.commands.private import show_private_key
 from nospy.commands.publish import publish
 from nospy.commands.follow import follow
 from nospy.commands.unfollow import unfollow
-from nospy.commands.key_gen import key_gen
+from nospy.commands.following import following
+from nospy.commands.keygen import key_gen
 from nospy.commands.relay_add import relay_add
 from nospy.commands.relay_remove import relay_remove
 from nospy.commands.relays import relays
@@ -73,9 +74,7 @@ def main():
 
     ### FOLLOW ##########################
     elif args.get("follow", False):
-        pubkey = args["<pubkey>"]
-        follow(pubkey)
-        logger.info(f"following {pubkey}")
+        follow(args)
 
     ### UNFOLLOW ########################
     elif args.get("unfollow", False):
@@ -85,10 +84,11 @@ def main():
 
     ### FOLLOWING #######################
     elif args.get("following", False):
-        logger.info("showing everyone you follow...")
+        # logger.info("showing everyone you follow...")
+        following(args)
 
     ### KEY-GEN #########################
-    elif args.get("key-gen", False):
+    elif args.get("keygen", False):
         key_gen(args)
 
     ### RELAY-ADD #######################
