@@ -74,7 +74,7 @@ class Config(Singleton):
         return PrivateKey(bites)
 
     @private_key.setter
-    def private_key(self, key):
+    def private_key(self, key): # TODO: -> None ??? SHOULD A DATACLASS SETTER HAVE A RETURN TYPE?  -> Config (????)
         self.state["private_key"] = key
 
     @property
@@ -85,10 +85,10 @@ class Config(Singleton):
         return priv.public_key
 
     @property
-    def relays(self):
+    def relays(self) -> dict:
         return self.state.get("relays", {})
     
-    def add_relay(self, addr, policy):
+    def add_relay(self, addr, policy) -> None:
         if "relays" not in self.state:
             self.state["relays"] = {}
         self.state["relays"][addr] = policy
@@ -100,11 +100,11 @@ class Config(Singleton):
         else:
             return False
         
-    def clear_relays(self):
+    def clear_relays(self) -> None:
         self.state["relays"] = {}
 
     @property
-    def following(self):
+    def following(self) -> dict:
         return self.state.get("following", {})
 
     # def follow(self, pubkey, nickname=None):
@@ -125,7 +125,7 @@ class Config(Singleton):
     #     else:
     #         return False
 
-    def follow(self, pubkey, name=None):
+    def follow(self, pubkey, name=None) -> None:
         if "following" not in self.state:
             self.state["following"] = {}
 
@@ -139,20 +139,6 @@ class Config(Singleton):
             return False
             
     
-    # @property
-    # def private_key_bytes(self) -> Union[None, PrivateKey]:
-    #     """ TODO - I think this is a stupid round-about way of doing things... we should just init the config and store the private key as a PrivateKey object... DUH!
-    #     """
-
-    #     if not self.private_key:
-    #         logger.critical("No private key set. Please set a private key first.")
-    #         return None
-
-    #     bites = bytes.fromhex(self.private_key)
-
-    #     return PrivateKey(bites)
-
-
     ##############################
 
 

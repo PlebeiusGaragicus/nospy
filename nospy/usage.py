@@ -10,6 +10,7 @@ Usage:
   nospy unfollow <pubkey>
   nospy following
   nospy getinfo <pubkey>
+  nospy home
   nospy keygen [--12-words] [--passphrase=<passphrase>] [--noformat]
   nospy relay-add <url>
   nospy relay-remove [<url> | --all]

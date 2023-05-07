@@ -40,3 +40,22 @@ def nsecToHex(nsec: str) -> Union[None, str]:
 
     # return bech32.decode(nsec).data.toString('hex');
 
+
+
+def npubToHex(npub: str) -> Union[None, str]:
+    """ provide a bech32 npub-formatted string, and get back the hex-encoded public key """
+
+    hrpgot, data = bech32.bech32_decode(npub)
+
+    if hrpgot != "npub":
+        logger.critical("Invalid human-readable part (prefix) of the encoded public key.")
+        return None
+
+    decoded = bech32.convertbits(data, 5, 8, False)
+    if decoded is None:
+        logger.critical("Error decoding the encoded public key.")
+        return None
+
+    keyval = ''.join('{:02x}'.format(byte) for byte in decoded)
+
+    return keyval

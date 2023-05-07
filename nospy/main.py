@@ -16,7 +16,7 @@ from nospy.commands.publish import publish
 from nospy.commands.follow import follow
 from nospy.commands.unfollow import unfollow
 from nospy.commands.following import following
-# from nospy.commands.home import home
+from nospy.commands.home import home
 from nospy.commands.getinfo import get_info
 from nospy.commands.keygen import key_gen
 from nospy.commands.relay_add import relay_add
@@ -57,6 +57,8 @@ def main():
         following(args)
     elif args.get("getinfo", False):
         get_info(args)
+    elif args.get("home", False):
+        home(args)
     elif args.get("keygen", False):
         key_gen(args)
     elif args.get("relay-add", False):
