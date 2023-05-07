@@ -15,6 +15,7 @@ setup(
         'docopt',
         'bitcoin',
         'bech32',
+        'nostr',
     ],
     classifiers=[
         # Choose classifiers from https://pypi.org/classifiers/
