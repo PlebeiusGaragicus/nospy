@@ -29,7 +29,7 @@ def setup_logging():
     if debug:
         # log_format = "%(asctime)s %(levelname)s | (%(filename)s @ %(lineno)d) >> %(message)s"
         # log_format = "%(levelname)s | %(asctime)s | (%(filename)s @ %(lineno)d) | %(message)s"
-        log_format = "%(levelname)s | (%(filename)s @ %(lineno)d) | %(message)s"
+        log_format = "%(name)s %(levelname)s | (%(filename)s @ %(lineno)d) | %(message)s"
     else:
         # log_format = "%(asctime)s %(levelname)s | %(message)s"
         # log_format = "%(levelname)s | %(asctime)s | %(message)s"

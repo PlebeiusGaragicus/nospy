@@ -42,53 +42,20 @@ def nsecToHex(nsec: str) -> Union[None, str]:
 
 
 
+def npubToHex(npub: str) -> Union[None, str]:
+    """ provide a bech32 npub-formatted string, and get back the hex-encoded public key """
 
+    hrpgot, data = bech32.bech32_decode(npub)
 
-
-
-
-def load_private_key() -> Union[None, PrivateKey]:
-    Config.get_instance().load_config()
-
-    privkey = Config.get_instance().private_key
-
-    if not privkey:
-        logger.critical("No private key found. Please set a private key first.")
+    if hrpgot != "npub":
+        logger.critical("Invalid human-readable part (prefix) of the encoded public key.")
         return None
-    
-    bs = bytes.fromhex(privkey)
 
-    return PrivateKey(bs)
+    decoded = bech32.convertbits(data, 5, 8, False)
+    if decoded is None:
+        logger.critical("Error decoding the encoded public key.")
+        return None
 
+    keyval = ''.join('{:02x}'.format(byte) for byte in decoded)
 
-
-
-
-
-
-# def decode_key(keyraw: str): 
-#     if len(keyraw) == 64:
-#         # hex-encoded
-#         try:
-#             keyval = codecs.decode(keyraw, "hex")
-#         except ValueError as e:
-#             raise ValueError(f"Decoding key from hex: {str(e)}") from e
-#         return keyval
-#     else:
-#         # bech32-encoded
-#         _, keyval = bech32.decode(keyraw)
-#         if keyval is None:
-#             raise ValueError(f"Decoding key from bech32: invalid bech32 string")
-#         return bytes(keyval)
-
-
-
-
-# def get_pub_key(private_key: str):
-#     try:
-#         pubkey = privtopub(private_key)
-#     except Exception as e:
-#         logging.info(f"Error decoding key from hex: {str(e)}")
-#         return ""
-#     return pubkey
-
+    return keyval

@@ -4,8 +4,13 @@ logger = logging.getLogger("nospy")
 from nospy.config import Config
 
 
-def unfollow(pubkey):
-    # pubkey = opts.get('<pubkey>', None)
+def unfollow(args):
+    pubkey = args.get('<pubkey>', None)
+
+    # shouldn't need this because of docopt
+    # if pubkey is None:
+    #     logger.error("Please specify a pubkey to unfollow.")
+    #     return
 
     if pubkey:
         removed = Config.get_instance().unfollow(pubkey)

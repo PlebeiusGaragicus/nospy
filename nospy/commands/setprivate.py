@@ -44,10 +44,7 @@ def set_private_key(opts) -> Union[None, str]:
     #     return None
 
 
-
-    keyraw = opts["<key_material>"]
-    # logger.debug(f"Setting private key to '{keyraw}'")
-
+    keyraw = opts.get("<key_material>", None)
 
 
     # if keyraw is BASE58 nsec
@@ -69,11 +66,12 @@ def set_private_key(opts) -> Union[None, str]:
 
     # keyraw is a hex-encoded string
     elif re.match("^[0-9a-fA-F]+$", keyraw):
-        # TODO: ERROR CHECKING HERE
         logger.debug(f"Hex-encoded string detected: {keyraw}")
-        logger.critical("NOT IMPLEMENTED")
-        sys.exit(1)
+        # TODO: ERROR CHECKING HERE
         # logger.info(f"Supplied hex-encded private key appears valid: {fuck}")
+
+        Config.get_instance().private_key = keyraw
+        Config.get_instance().save_config()
 
 
 
@@ -82,24 +80,27 @@ def set_private_key(opts) -> Union[None, str]:
         wordlist = keyraw.split()
         logger.debug(f"Procesing seed words: {wordlist}")
 
-        passphrase = None
-        if opts.get("--passphrase", False):
-            passphrase = opts["--passphrase"]
+        # passphrase = None
+        # if opts.get("--passphrase", False):
+        #     passphrase = opts["--passphrase"]
+        #     logging.debug(f"Using supplied passphrase: '{passphrase}'")
+        passphrase = opts.get("--passphrase", None)
+        if passphrase is not None:
             logging.debug(f"Using supplied passphrase: '{passphrase}'")
 
-        # Refer to: https://github.com/nostr-protocol/nips/blob/master/06.md
-        # derivation_path = "m/44'/1237'/0'/0/0"
+
         try:
+            # Refer to: https://github.com/nostr-protocol/nips/blob/master/06.md
+            # derivation_path = "m/44'/1237'/0'/0/0"
             pk = Bip39PrivateKey(mnemonic=wordlist, passphrase=passphrase)
 
             Config.get_instance().private_key = pk.hex()
             Config.get_instance().save_config()
         except bip39.DecodingError as e:
             logger.error(f"{str(e)}")
-            sys.exit(1)
             # TODO: should this function exit() or return false or what?
-            # return
+            sys.exit(1)
+
         except ValueError as e:
             logger.error(f"{str(e)}")
             sys.exit(1)
-            # return

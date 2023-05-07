@@ -12,7 +12,6 @@ def relay_remove(opts):
         logger.error("Please specify a relay address or use --all.")
         return
 
-
     if addr:
         removed = Config.get_instance().remove_relay(addr)
         if removed:

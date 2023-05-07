@@ -11,7 +11,11 @@ logger = logging.getLogger("nospy")
 
 from nospy.config import Config
 
-from nospy.keys import load_private_key
+from nospy.relay import connect_to_relays
+
+
+def init_nostr():
+    logger.debug("Initializing Nostr...")
 
 
 
@@ -47,25 +51,11 @@ def publish(args):
         logger.error("No content provided. Content must not be empty.")
         return
     
+    relay_manager = connect_to_relays()
 
-
-    relay_manager = RelayManager()
-    relays = Config.get_instance().relays
-    for r in relays:
-        logger.debug(f"Adding relay: {r}")
-        relay_manager.add_relay(r)
-    # relay_manager.add_relay("wss://nostr-pub.wellorder.net")
-    # relay_manager.add_relay("wss://relay.damus.io")
-
-    logger.debug("Opening connections...")
-    relay_manager.open_connections({"cert_reqs": ssl.CERT_NONE}) # NOTE: This disables ssl certificate verification
-    time.sleep(1.25) # allow the connections to open
-
-    # private_key = PrivateKey()
-    private_key = load_private_key()
-
-    event = Event(private_key.public_key.hex(), content)
-    private_key.sign_event(event)
+    priv = Config.get_instance().private_key
+    event = Event(priv.public_key.hex(), content)
+    priv.sign_event(event)
 
     logger.debug("Publishing event...")
     relay_manager.publish_event(event)

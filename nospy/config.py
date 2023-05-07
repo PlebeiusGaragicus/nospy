@@ -3,10 +3,12 @@ import sys
 import json
 from pathlib import Path
 from dataclasses import dataclass, field
+from typing import Union
 
 import logging
 logger = logging.getLogger("nospy")
 
+from nostr.key import PrivateKey, PublicKey
 
 DATA_DIR = ".config/nospy"
 CONFIG_FILENAME = "config.json"
@@ -60,19 +62,33 @@ class Config(Singleton):
 
 
     ##############################
+    # @property
+    # def private_key(self):
+    #     return self.state.get("private_key")
     @property
-    def private_key(self):
-        return self.state.get("private_key")
+    def private_key(self) -> Union[None, PrivateKey]:
+        priv = self.state.get("private_key", None)
+        if priv is None:
+            return None
+        bites = bytes.fromhex(priv)
+        return PrivateKey(bites)
 
     @private_key.setter
-    def private_key(self, value):
-        self.state["private_key"] = value
+    def private_key(self, key): # TODO: -> None ??? SHOULD A DATACLASS SETTER HAVE A RETURN TYPE?  -> Config (????)
+        self.state["private_key"] = key
 
     @property
-    def relays(self):
+    def public_key(self) -> Union[None, PublicKey]:
+        priv = self.private_key
+        if priv is None:
+            return None
+        return priv.public_key
+
+    @property
+    def relays(self) -> dict:
         return self.state.get("relays", {})
     
-    def add_relay(self, addr, policy):
+    def add_relay(self, addr, policy) -> None:
         if "relays" not in self.state:
             self.state["relays"] = {}
         self.state["relays"][addr] = policy
@@ -84,25 +100,45 @@ class Config(Singleton):
         else:
             return False
         
-    def clear_relays(self):
+    def clear_relays(self) -> None:
         self.state["relays"] = {}
 
     @property
-    def following(self):
-        return self.state.get("following", [])
+    def following(self) -> dict:
+        return self.state.get("following", {})
 
-    def follow(self, pubkey):
+    # def follow(self, pubkey, nickname=None):
+    #     if "following" not in self.state:
+    #         self.state["following"] = []
+
+    #     f = {
+    #             "pubkey": pubkey,
+    #             "nickname": nickname
+    #          }
+
+    #     self.state["following"].append(f)
+
+    # def unfollow(self, addr) -> bool:
+    #     if "following" in self.state and addr in self.state["following"]:
+    #         self.state["following"].remove(addr)
+    #         return True
+    #     else:
+    #         return False
+
+    def follow(self, pubkey, name=None) -> None:
         if "following" not in self.state:
-            self.state["following"] = []
-        self.state["following"].append(pubkey)
+            self.state["following"] = {}
 
-    def unfollow(self, addr) -> bool:
-        if "following" in self.state and addr in self.state["following"]:
-            self.state["following"].remove(addr)
+        self.state["following"][pubkey] = {"name": name}
+
+    def unfollow(self, pubkey) -> bool:
+        if "following" in self.state and pubkey in self.state["following"]:
+            del self.state["following"][pubkey]
             return True
         else:
             return False
-
+            
+    
     ##############################
 
 
@@ -116,7 +152,7 @@ class Config(Singleton):
             json.dump(self.state, f, indent=4)
 
         logger.debug(f"Saving the current config to file: {self.config_path}")
-        logger.debug(f"Config: {self.state}")
+        # logger.debug(f"Config: {self.state}")
 
 
     def load_config(self):
@@ -131,7 +167,7 @@ class Config(Singleton):
         with open(self.config_path, "r") as f:
             try:
                 self.state = json.load(f)
-                logger.debug(f"Config: {self.state}")
+                # logger.debug(f"Config: {self.state}")
             except json.JSONDecodeError as e:
                 logger.critical(f"Can't parse config file. Ensure the file is properly formatted JSON. {self.config_path}: {str(e)}")
                 sys.exit(1)

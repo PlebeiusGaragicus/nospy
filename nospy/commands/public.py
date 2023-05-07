@@ -6,13 +6,13 @@ from nospy.config import Config
 from nostr.key import PrivateKey
 
 def show_public_key(opts):
-    if Config.get_instance().private_key == None:
+    if Config.get_instance().private_key is None:
         logger.warn("No private key set.")
         return
     
-    bitz = bytes.fromhex(Config.get_instance().private_key)
+    # bitz = bytes.fromhex(Config.get_instance().private_key)
+    # priv = PrivateKey(bitz)
+    pub = Config.get_instance().public_key
 
-    priv = PrivateKey(bitz)
-
-    print(f"npub: {priv.public_key.bech32()}")
-    print(f"hex:  {priv.public_key.hex()}")
+    print(f"npub: {pub.bech32()}")
+    print(f"hex:  {pub.hex()}")
