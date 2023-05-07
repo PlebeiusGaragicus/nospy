@@ -105,7 +105,7 @@ class Config(Singleton):
 
     @property
     def following(self):
-        return self.state.get("following", [])
+        return self.state.get("following", {})
 
     # def follow(self, pubkey, nickname=None):
     #     if "following" not in self.state:
@@ -166,7 +166,7 @@ class Config(Singleton):
             json.dump(self.state, f, indent=4)
 
         logger.debug(f"Saving the current config to file: {self.config_path}")
-        logger.debug(f"Config: {self.state}")
+        # logger.debug(f"Config: {self.state}")
 
 
     def load_config(self):
@@ -181,7 +181,7 @@ class Config(Singleton):
         with open(self.config_path, "r") as f:
             try:
                 self.state = json.load(f)
-                logger.debug(f"Config: {self.state}")
+                # logger.debug(f"Config: {self.state}")
             except json.JSONDecodeError as e:
                 logger.critical(f"Can't parse config file. Ensure the file is properly formatted JSON. {self.config_path}: {str(e)}")
                 sys.exit(1)

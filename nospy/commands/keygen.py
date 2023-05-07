@@ -48,7 +48,7 @@ def key_gen(opts):
 
     --12-words          : Generate a key as 12 seed words (defaults is 24)
     --passphrase=       : Supply a passphrase
-    --raw               : Only display bech32 'nsec' and word list
+    --noformat               : Only display bech32 'nsec' and word list
 
     ```
     """
@@ -64,9 +64,9 @@ def key_gen(opts):
         passphrase = None
         logging.debug("no supplied passphrase")
 
-    raw = False
-    if opts.get("--raw", False):
-        raw = True
+    noformat = False
+    if opts.get("--noformat", False):
+        noformat = True
 
 
     # The key is created right here!
@@ -80,26 +80,20 @@ def key_gen(opts):
 
     formatted_seed_words = format_seed_words(pk.mnemonic)
 
-    if not raw:
+    if not noformat:
         print(f"nsec:     {pk.bech32()}")
         print(f"nsec hex: {pk.hex()}")
         print(f"npub:     {pk.public_key.bech32()}")
         print(f"npub hex: {pk.public_key.hex()}")
-        # print(f"words:    {pk.mnemonic}")
         print(formatted_seed_words)
         if passphrase:
-            print(f"phrase:   {passphrase}")
-            print(f"'phrase' '{passphrase}'")
+            print(f"passphrase:   {passphrase}")
+            print(f"with quotes: '{passphrase}'")
     else:
         print(pk.bech32())
+        print(pk.hex())
+        print(pk.public_key.bech32())
+        print(pk.public_key.hex())
         print(" ".join(pk.mnemonic))
-
-    # else:
-    #     print(pk.bech32())
-    #     print(pk.hex())
-    #     print(pk.public_key.bech32())
-    #     print(pk.public_key.hex())
-    #     # print(mnemonic)
-    #     print(formatted_seed_words)
-    #     if passphrase:
-    #         print(passphrase)
+        if passphrase:
+            print(passphrase)
