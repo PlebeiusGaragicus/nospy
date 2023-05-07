@@ -53,11 +53,14 @@ class Config(Singleton):
         #     self.save_config(config_path)
         # else:
         #     self.load_config(config_path)
-        if os.path.exists(self.config_path):
-            self.load_config()
-        else:
-            # logger.warn(f"Config file not found. Creating a new one: {self.config_path}")
-            logger.warn(f"Config file not found.")
+
+        self.load_config()
+
+        # if os.path.exists(self.config_path):
+        #     self.load_config()
+        # else:
+        #     # logger.warn(f"Config file not found. Creating a new one: {self.config_path}")
+        #     logger.warn(f"Config file not found.")
             # self.save_config()
 
 
@@ -158,6 +161,11 @@ class Config(Singleton):
     def load_config(self):
         """Initialize the config file."""
         logger.debug(f"Loading config file: {self.config_path}")
+
+        if not os.path.exists(self.config_path):
+            logger.warn(f"Config file not found.")
+            self.state = {} # Set the state to an empty dictionary
+            return
 
         if os.path.getsize(self.config_path) == 0:
             logger.warn(f"Config file is empty.")

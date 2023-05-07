@@ -8,6 +8,7 @@ def relay_remove(opts):
     addr = opts.get('<url>', None)
     all_relays = opts.get('--all', False)
 
+    # TODO: I don't think we need this because docopt is handling it
     if not addr and not all_relays:
         logger.error("Please specify a relay address or use --all.")
         return

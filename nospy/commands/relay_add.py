@@ -12,10 +12,10 @@ def relay_add(opts):
         return
 
     if addr in Config.get_instance().relays:
-        logger.error(f"Relay {addr} already exists.")
+        logger.warn(f"Relay '{addr}' has already been added.")
         return
 
-    logger.debug(f"Adding relay... '{addr}'")
+    logger.info(f"Adding relay: '{addr}'")
     Config.get_instance().add_relay(addr, {
         'read': True,
         'write': True,

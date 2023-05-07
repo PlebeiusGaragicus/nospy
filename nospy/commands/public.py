@@ -14,5 +14,5 @@ def show_public_key(opts):
     # priv = PrivateKey(bitz)
     pub = Config.get_instance().public_key
 
-    print(f"npub: {pub.bech32()}")
-    print(f"hex:  {pub.hex()}")
+    print(f"bech32: {pub.bech32()}")
+    print(f"hex:    {pub.hex()}")
