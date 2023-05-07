@@ -28,15 +28,18 @@ def print_event(event, name: str, verbose: bool, json_format: bool):
 
     dt = datetime.datetime.fromtimestamp(event.event.created_at).strftime('%Y-%m-%d %H:%M')
 
-    print(f"{dt} | {name}:", end=" ")
-    print(event.event.content)
+    blue = "\033[1;34m"
+    green = "\033[0;32m"
+    end = "\033[0m"
+
+    print(f"{dt} | {blue}{name}{end}:", end=" ")
+    print(f"{green}{event.event.content}{end}")
 
 
 def home(opts, inbox_mode=False):
     if len(Config.get_instance().following) == 0:
         print("You need to be following someone to run 'home'")
         return
-
 
     # get the list of npubs we are following...
     following = Config.get_instance().following
@@ -57,6 +60,11 @@ def home(opts, inbox_mode=False):
     relay_manager = RelayManager()
 
     relays = Config.get_instance().relays
+    if relays == {}:
+        logger.error("You need to add a relay to run 'home'")
+        # print("You need to add a relay to run 'home'")
+        return
+
     for relay_url, contents in relays.items():
         if contents['read'] == True:
             logger.debug(f"Adding relay: {relay_url}")
