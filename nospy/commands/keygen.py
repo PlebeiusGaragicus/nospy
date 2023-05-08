@@ -85,6 +85,8 @@ def key_gen(opts):
         print(f"nsec hex: {pk.hex()}")
         print(f"npub:     {pk.public_key.bech32()}")
         print(f"npub hex: {pk.public_key.hex()}")
+        print()
+        print(" ".join(pk.mnemonic))
         print(formatted_seed_words)
         if passphrase:
             print(f"passphrase:   {passphrase}")
