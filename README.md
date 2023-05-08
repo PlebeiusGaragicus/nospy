@@ -1,33 +1,47 @@
-**NOTE**: This is totally a work-in-progress.  My goal is to bring this to feature parity with `noscl` before I ever reach out to anyone about it.
+**NOTE**: This is totally a work-in-progress.  My goal is to bring this to feature parity with `noscl` but that may take awhile.
+
+It works for now 🤷
 
 # nospy
 
 A [nostr](https://github.com/fiatjaf/nostr) command-line utility written in Python: **NOS**tr **PY**thon
 
-Fiatjaf's `noscl` is _really_ cool, but I don't know Go.  So, I'm doing things the hard way... I mean the fun way... 😘
+Fiatjaf's `noscl` is [_really_ cool](https://github.com/fiatjaf/noscl), but I don't know Go.  So, I'm doing things the hard way... I mean the fun way!
 
-The article that started it all: https://dergigi.com/2023/01/19/how-to-build-a-nostr-gm-bot/
+The article that inspired me: https://dergigi.com/2023/01/19/how-to-build-a-nostr-gm-bot/
 
 # Usage:
 
 ```
 Usage:
   nospy version
-  nospy setprivate <key>
+  nospy setprivate <key_material> [--passphrase=<passphrase>]
   nospy public
-  nospy publish
+  nospy private
+  nospy publish [<content>] [--file=<file>]
   nospy follow <pubkey> [--name=<name>]
   nospy unfollow <pubkey>
   nospy following
-  nospy key-gen
+  nospy getinfo <pubkey>
+  nospy home
+  nospy keygen [--12-words] [--passphrase=<passphrase>] [--noformat]
+  nospy relay-add <url>
+  nospy relay-remove [<url> | --all]
+  nospy relays
 ```
 
 # How to install
 
-`git clone` this repo and run `pip install -e .` inside the created directory.
+```sh
+git clone https://github.com/PlebeiusGaragicus/nospy.git
+cd nospy
+pip install -r requirements.txt
+pip install .
 
-Then, you should be able to run `nospy`
-
+# verify install
+which nospy
+nospy version
+```
 
 # Reference
 
