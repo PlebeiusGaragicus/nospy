@@ -16,7 +16,7 @@ def relay_remove(opts):
     if addr:
         removed = Config.get_instance().remove_relay(addr)
         if removed:
-            logger.info(f"Removed relay {addr}.")
+            logger.info(f"Removed relay {addr}")
             Config.get_instance().save_config()
         else:
             # logger.error(f"Relay {addr} not found. You're not subscribed to this relay.")
