@@ -4,6 +4,6 @@ bitcoin
 bech32
 bip32
 bip39
-
 nostr
+
 # git+https://github.com/jeffthibault/python-nostr.git@relay-threads#egg=nostr
