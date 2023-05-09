@@ -10,8 +10,8 @@ logger = logging.getLogger("nospy")
 
 from nostr.key import PrivateKey, PublicKey
 
-DATA_DIR = ".config/nospy"
-CONFIG_FILENAME = "config.json"
+DATA_DIR = str(Path.home() / ".config/nospy")
+CONFIG_FILENAME = f"{os.getenv('NOSPY_USER', 'default')}.json"
 
 
 class Singleton:
@@ -39,14 +39,15 @@ class Config(Singleton):
         # logger.debug("Initializing config...")
         # data_dir = str(Path.home() / DATA_DIR)
         # TODO: This is a hack to allow for testing. We should find a better way to do this.... also... don't ship this code with this hack in it...
-        if os.getenv("DEBUG", False):
-            data_dir = str(Path.cwd() / DATA_DIR)
-        else:
-            data_dir = str(Path.home() / DATA_DIR)
-        os.makedirs(data_dir, exist_ok=True)
+        # if os.getenv("DEBUG", False):
+            # data_dir = str(Path.cwd() / DATA_DIR)
+        # else:
+            # data_dir = str(Path.home() / DATA_DIR)
+        # data_dir = str(DATA_DIR)
+        os.makedirs(DATA_DIR, exist_ok=True)
 
         # Parse config
-        self.config_path = os.path.join(data_dir, CONFIG_FILENAME)
+        self.config_path = os.path.join(DATA_DIR, CONFIG_FILENAME)
         # NOTE: There is no reason to save an empty config file... also, we can't do this inside __init__ because self.state isn't set yet
         # if not os.path.exists(config_path):
         #     logging.warn(f"Config file not found. Creating a new one: {config_path}")
@@ -148,8 +149,8 @@ class Config(Singleton):
     def save_config(self):
         """Save the config file."""
 
-        data_dir = str(Path.home() / DATA_DIR)
-        os.makedirs(data_dir, exist_ok=True)
+        # data_dir = str(Path.home() / DATA_DIR)
+        os.makedirs(DATA_DIR, exist_ok=True)
 
         with open(self.config_path, "w") as f:
             json.dump(self.state, f, indent=4)
@@ -163,12 +164,13 @@ class Config(Singleton):
         logger.debug(f"Loading config file: {self.config_path}")
 
         if not os.path.exists(self.config_path):
-            logger.warn(f"Config file not found.")
+            # logger.warn(f"Config file not found.")
             self.state = {} # Set the state to an empty dictionary
             return
 
+        # TODO: I'm not sure this is even needed...
         if os.path.getsize(self.config_path) == 0:
-            logger.warn(f"Config file is empty.")
+            # logger.warn(f"Config file is empty.")
             self.state = {}  # Set the state to an empty dictionary
             return
 
