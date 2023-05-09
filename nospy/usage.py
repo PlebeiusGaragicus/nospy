@@ -21,7 +21,15 @@ Notes:
     - A nsec (base58) string (e.g., nsec1234567890...)
     - A hex-encoded string (e.g., 1a2b3c4d...)
     - A list of seed words enclosed in quotes (e.g., "word1 word2 word3 ...")
+
+  Set the environment variable NOSPY_USER to allow for nospy to manage multiple nostr accounts
 '''
+
+# TODO: Maybe it would make sense to have an alias of nospy=`nospy --user=plebbyg`
+
+# having a user argument for every command is a bit annoying
+
+# it could error if there is more than one user set and no user is specified...
 
 
 
