@@ -16,6 +16,7 @@ Usage:
   nospy relay-remove [<url> | --all]
   nospy relays
   nospy users
+  nospy upload <file>
 
 Notes:
   <key_material> for the setprivate command can be:

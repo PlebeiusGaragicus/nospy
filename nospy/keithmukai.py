@@ -3,7 +3,6 @@ from typing import List
 import secrets
 
 from embit import bip39
-from embit import bip32
 from embit.bip32 import HDKey
 from nostr.key import PrivateKey
 

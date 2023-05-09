@@ -23,6 +23,7 @@ from nospy.commands.relay_add import relay_add
 from nospy.commands.relay_remove import relay_remove
 from nospy.commands.relays import relays
 from nospy.commands.users import users
+from nospy.commands.upload import upload
 
 
 def main():
@@ -70,3 +71,5 @@ def main():
         relays(args)
     elif args.get("users", False):
         users()
+    elif args.get("upload", False):
+        upload(args)

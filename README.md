@@ -29,6 +29,7 @@ Usage:
   nospy relay-remove [<url> | --all]
   nospy relays
   nospy users
+  nospy upload <file>
 ```
 
 `nospy` is now mult-user capable.  User config files are stored in `~/.config/nospy/<username>.json`. To use `nospy` with a user set the NOSPY_USER environment variable.  If NOSPY_USER is not set, then the 'default' user will be used.
