@@ -1,0 +1,47 @@
+#!/bin/bash
+
+##############################################################################
+# USAGE:
+# ./scripts/setup_user.sh
+
+# This tool is meant to be run on your local machine with access to needed media
+# it generates a new private key, uploads media and creates a profile to upload to relays
+# Then, it will PRINT OUT all needed into so that you can run ./import_user on your server
+##############################################################################
+
+# SET THE USER
+echo "Enter nostr username: "
+read USERNAME
+NOSPY_USER=$USERNAME
+
+# SET THE PRIVATE KEY
+PRIVATE=$(nospy keygen | grep -m 1 'nsec:' | awk '{print $2}')
+echo $PRIVATE
+nospy setprivate $PRIVATE
+
+# ADD RELAYS
+nospy relay-add wss://relay.damus.io
+nospy relay-add wss://nos.lol
+nospy relay-add wss://relay.snort.social
+
+exit
+
+
+
+
+
+
+
+
+# UPLOAD MEDIA TO NOSTR.BUILD or void.cat
+PROFILE_LINK=$(nospy upload ./profile.png | grep -m 1 link: | awk '{print $2}')
+
+# TODO: WHAT ABOUT UPLOAD ERRORS?
+# CAPTURE THIS
+
+nospy upload <BANNER>
+# CAPTURE THIS
+
+
+nospy setprofile <...> <...>
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+##############################################################################
+# USAGE:
+# ./scripts/import_user.sh
+
+# This tool is meant to be run on the bot server
+# TODO
+##############################################################################
+
+echo "not implemented yet"
