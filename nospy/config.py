@@ -10,6 +10,8 @@ logger = logging.getLogger("nospy")
 
 from nostr.key import PrivateKey, PublicKey
 
+
+# NOTE: the `NOSPY_USER` environment variable is used to allow for nospy to manage multiple nostr accounts. If unset, the "default" user is used
 DATA_DIR = str(Path.home() / ".config/nospy")
 CONFIG_FILENAME = f"{os.getenv('NOSPY_USER', 'default')}.json"
 
