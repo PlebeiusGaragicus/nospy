@@ -15,6 +15,7 @@ Usage:
   nospy relay-add <url>
   nospy relay-remove [<url> | --all]
   nospy relays
+  nospy users
 
 Notes:
   <key_material> for the setprivate command can be:

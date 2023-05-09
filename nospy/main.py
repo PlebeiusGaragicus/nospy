@@ -22,6 +22,7 @@ from nospy.commands.keygen import key_gen
 from nospy.commands.relay_add import relay_add
 from nospy.commands.relay_remove import relay_remove
 from nospy.commands.relays import relays
+from nospy.commands.users import users
 
 
 def main():
@@ -67,3 +68,5 @@ def main():
         relay_remove(args)
     elif args.get("relays", False):
         relays(args)
+    elif args.get("users", False):
+        users()
