@@ -1,3 +1,6 @@
+# Credit: Jack Sweeney
+
+import sys
 import requests
 import mimetypes
 from requests.exceptions import HTTPError
@@ -5,12 +8,11 @@ from requests.exceptions import HTTPError
 import logging
 logger = logging.getLogger("nospy")
 
-import docopt
 
 def nostr_build_upload(file_name):
     """ Uploads an image/video to nostr build and returns the URL of it.
     """
-    logger.debug("Uploading %s to nostr.build", file_name)
+    logger.debug(f"Uploading '{file_name}' to nostr.build...")
 
     url = 'https://nostr.build/api/upload/ios.php'
 
@@ -26,7 +28,7 @@ def nostr_build_upload(file_name):
 def void_cat_upload(file_name):
     """ Uploads an image/video to void.cat and returns the URL of it.
     """
-    logger.debug("Uploading %s to void.cat", file_name)
+    logger.debug(f"Uploading '{file_name}' to void.cat...")
 
     mime_type, _ = mimetypes.guess_type(file_name)
 
@@ -47,28 +49,32 @@ def upload_on_any(file_name):
     """Uploads an image/video to nostr build or void cat, depending on if the first fails."""
     try:
         url = nostr_build_upload(file_name)
+
     except HTTPError:
-        pass
+        logger.debug("Failed to upload image to nostr.build")
+        pass # we will try another attempt using void.cat below
+
+    except FileNotFoundError as e:
+        logger.error(f"File '{file_name}' not found.")
+        sys.exit(1)
     else:
+        logger.debug("Successfully uploaded image to nostr.build")
         return url
     try:
         url = void_cat_upload(file_name)
     except HTTPError:
-        return None
+        logger.error("Failed to upload image")
+        sys.exit(1)
+        # return None
     else:
+        logger.debug("Successfully uploaded image to void.cat")
         return url
-    
+
 
 def upload(args):
     file_name = args.get("<file>", None)
 
-    logger.info("Uploading %s", file_name)
-
     image_link = upload_on_any(file_name)
 
-    if image_link is None:
-        logger.error("Failed to upload image")
-        return
-
-    # logger.info("Image uploaded to %s", image_link)
-    print(image_link)
+    # print(image_link)
+    print(f"link: {image_link}")
